@@ -1,29 +1,14 @@
 import pygame
 from Player import Player
+from Platform import Platform
 
 SIZE = (640, 480)
 
 window = pygame.display.set_mode(SIZE)
-
 screen = pygame.Surface(SIZE)
 
-
-class Platform:
-    def __init__(self):
-        self.ing = pygame.image.load('images/icon.png')
-
-
-def make_level(level, platform):
-    x = 0
-    y = 0
-    for row in level:
-        for col in row:
-            if col == '-':
-                screen.blit(platform.ing, (x, y))
-            x += 40
-        y += 40
-        x = 0
-
+hero = Player(60, 60)
+left = right = up = False
 
 level = [
     '----------------',
@@ -39,11 +24,21 @@ level = [
     '-              -',
     '----------------', ]
 
-pl = Platform()
+sprite_group = pygame.sprite.Group()
+sprite_group.add(hero)
+platforms = []
 
+x = y = 0
 
-hero = Player(55, 55)
-left = right = False
+for row in level:
+    for col in row:
+        if col == "-":
+            pl = Platform(x, y)
+            sprite_group.add(pl)
+            platforms.append(pl)
+        x += 40
+    y += 40
+    x = 0
 
 done = True
 timer = pygame.time.Clock()
@@ -57,21 +52,22 @@ while done:
                 left = True
             if e.key == pygame.K_RIGHT:
                 right = True
+            if e.key == pygame.K_UP:
+                up = True
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
                 left = False
             if e.key == pygame.K_RIGHT:
                 right = False
+            if e.key == pygame.K_UP:
+                up = False
 
     screen.fill((10, 120, 10))
 
-    make_level(level, pl)
-
-    hero.update(left, right)
-    hero.draw(screen)
-
-    window.blit(screen, (0, 0))
+    hero.update(left, right, up, platforms)
+    sprite_group.draw(screen)
+    window.blit(screen,(0, 0))
 
     pygame.display.flip()
     timer.tick(60)
