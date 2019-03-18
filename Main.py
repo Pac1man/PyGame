@@ -1,28 +1,35 @@
 import pygame
 from Player import Player
-from Platform import Platform
+from Platform import Platform, DieBlock
+
 
 SIZE = (640, 480)
 
 window = pygame.display.set_mode(SIZE)
 screen = pygame.Surface(SIZE)
+background = pygame.image.load('images/w3.png').convert()
+
 
 hero = Player(60, 60)
-left = right = up = False
+left = right = up = down = False
 
 level = [
-    '----------------',
-    '-              -',
-    '-      --      -',
-    '-              -',
-    '-              -',
-    '-   -------    -',
-    '-              -',
-    '-              -',
-    '-     ----     -',
-    '-              -',
-    '-              -',
-    '----------------', ]
+    '---------------------',
+    '-                   -',
+    '-                   -',
+    '-        -----      -',
+    '-                   -',
+    '----------          -',
+    '-                   -',
+    '-    ------------ ---',
+    '-                   -',
+    '-                   -',
+    '-  ---------------- -',
+    '-                   -',
+    '--  -----   ---------',
+    '-     -----         -',
+    '-- *                -',
+    '---------------------', ]
 
 sprite_group = pygame.sprite.Group()
 sprite_group.add(hero)
@@ -36,8 +43,12 @@ for row in level:
             pl = Platform(x, y)
             sprite_group.add(pl)
             platforms.append(pl)
-        x += 40
-    y += 40
+        if col == "*":
+            bd = DieBlock(x, y)
+            sprite_group.add(bd)
+            platforms.append(bd)
+        x += 30
+    y += 30
     x = 0
 
 done = True
@@ -54,6 +65,8 @@ while done:
                 right = True
             if e.key == pygame.K_UP:
                 up = True
+            if e.key == pygame.K_DOWN:
+                down = True
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_LEFT:
@@ -62,12 +75,16 @@ while done:
                 right = False
             if e.key == pygame.K_UP:
                 up = False
+            if e.key == pygame.K_DOWN:
+                down = False
 
     screen.fill((10, 120, 10))
+    screen.blit(background, (0, 0))
 
-    hero.update(left, right, up, platforms)
+    hero.update(left, right, up, down, platforms)
     sprite_group.draw(screen)
-    window.blit(screen,(0, 0))
+
+    window.blit(screen, (0, 0))
 
     pygame.display.flip()
     timer.tick(60)
