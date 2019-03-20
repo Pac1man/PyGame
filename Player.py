@@ -4,13 +4,13 @@ import Platform
 
 MOVE_SPEED = 7
 JUMP_POWER = 10
-GRAVITY = 0.0
+GRAVITY = 0.7
 
 
 class Player(Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
-        self.image = Surface((23, 32))
+        self.image = Surface((20, 30))
         self.image.fill((150, 150, 150))
         self.xvel = 0
         self.yvel = 0
@@ -25,17 +25,13 @@ class Player(Sprite):
         if right:
             self.xvel = MOVE_SPEED
         if up:
+            if self.onGround:
+                self.yvel += GRAVITY
             self.yvel = -MOVE_SPEED + GRAVITY
-        if down:
-            self.yvel = MOVE_SPEED
+
 
         if not (left or right):
             self.xvel = 0
-        if not (down or up):
-            self.yvel = 0
-
-        if not self.onGround:
-            self.yvel += GRAVITY
 
         if not self.onGround:
             self.yvel += GRAVITY
@@ -51,7 +47,7 @@ class Player(Sprite):
         for pl in platforms:
             if collide_rect(self, pl):
                 if isinstance(pl, Platform.DieBlock):  # если пересакаемый блок - blocks.BlockDie или Monster
-                    self.die()  # умираем
+                    self.die()
                 if xvel > 0:
                     self.rect.right = pl.rect.left
                 if xvel < 0:
