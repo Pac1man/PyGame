@@ -7,7 +7,7 @@ SIZE = (640, 480)
 window = pygame.display.set_mode(SIZE)
 screen = pygame.Surface(SIZE)
 background = pygame.image.load('images/w3.png').convert()
-
+font = pygame.font.SysFont("Consolas", 40)
 hero = Player(60, 60)
 left = right = up = down = False
 
@@ -90,13 +90,10 @@ timer = pygame.time.Clock()
 
 start_ticks = pygame.time.get_ticks()
 while True:
-    seconds = (pygame.time.get_ticks() - start_ticks)/1000
-    if seconds > 30:
+    seconds = (pygame.time.get_ticks() - start_ticks) / 1000
+    if seconds > 90:
         break
-    print(seconds)
-
     for e in pygame.event.get():
-
         if e.type == pygame.QUIT:
             break
 
@@ -122,6 +119,8 @@ while True:
 
     screen.fill((10, 120, 10))
     screen.blit(background, (0, 0))
+    text = font.render(str(seconds), True, (0, 0, 0))
+    screen.blit(text, (500, 30))
 
     hero.update(left, right, up, down, platforms)
     camera.update(hero)

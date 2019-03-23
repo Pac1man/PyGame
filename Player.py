@@ -11,6 +11,7 @@ ANIMATION_STAY = [("images/hero/icon.png", ANIMATION_DELAY)]
 ANIMATION_RIGHT = ["images/hero/iconL.png"]
 ANIMATION_LEFT = ["images/hero/icon.png"]
 
+
 class Player(Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
@@ -59,7 +60,6 @@ class Player(Sprite):
         if not (left or right):
             self.xvel = 0
 
-
         if not self.onGround:
             self.yvel += GRAVITY
 
@@ -88,7 +88,6 @@ class Player(Sprite):
                     self.yvel = 0
 
     def die(self):
-        time.wait(500)
         self.teleporting(self.rect.x, self.rect.y)
 
     def teleporting(self, goX, goY):
