@@ -1,17 +1,20 @@
 from pygame.sprite import Sprite, collide_rect
 from pygame import Surface, time
+import pyganim
 import Platform
 
 MOVE_SPEED = 7
 JUMP_POWER = 10
 GRAVITY = 0.7
-
+ANIMATION_DELAY = 1
+ANIMATION_STAY = [("images/hero/icon.png", ANIMATION_DELAY)]
+ANIMATION_RIGHT = ["images/hero/iconL.png"]
+ANIMATION_LEFT = ["images/hero/icon.png"]
 
 class Player(Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
-        self.image = Surface((20, 30))
-        self.image.fill((150, 150, 150))
+        self.image = Surface((30, 30))
         self.xvel = 0
         self.yvel = 0
         self.rect = self.image.get_rect()
@@ -19,19 +22,43 @@ class Player(Sprite):
         self.rect.y = y
         self.onGround = False
 
+        def make_boltAnim(anim_list, delay):
+            boltAnim = []
+            for anim in anim_list:
+                boltAnim.append((anim, delay))
+            Anim = pyganim.PygAnimation(boltAnim)
+            return Anim
+
+        self.image.set_colorkey((0, 0, 0))
+        self.boltAnimStay = pyganim.PygAnimation(ANIMATION_STAY)
+        self.boltAnimStay.play()
+
+        self.boltAnimRight = make_boltAnim(ANIMATION_RIGHT, ANIMATION_DELAY)
+        self.boltAnimRight.play()
+
+        self.boltAnimLeft = make_boltAnim(ANIMATION_LEFT, ANIMATION_DELAY)
+        self.boltAnimLeft.play()
+
     def update(self, left, right, up, down, platforms):
+
         if left:
             self.xvel = -MOVE_SPEED
+            self.image.fill((0, 0, 0))
+            self.boltAnimLeft.blit(self.image, (0, 0))
+
         if right:
             self.xvel = MOVE_SPEED
+            self.image.fill((0, 0, 0))
+            self.boltAnimRight.blit(self.image, (0, 0))
+
         if up:
             if self.onGround:
                 self.yvel += GRAVITY
             self.yvel = -MOVE_SPEED + GRAVITY
 
-
         if not (left or right):
             self.xvel = 0
+
 
         if not self.onGround:
             self.yvel += GRAVITY
@@ -61,7 +88,7 @@ class Player(Sprite):
                     self.yvel = 0
 
     def die(self):
-        time.wait(50000)
+        time.wait(500)
         self.teleporting(self.rect.x, self.rect.y)
 
     def teleporting(self, goX, goY):
