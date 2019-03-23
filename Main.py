@@ -1,7 +1,7 @@
 import pygame
 from Player import Player
 from Platform import Platform, DieBlock
-
+pygame.init()
 SIZE = (640, 480)
 
 window = pygame.display.set_mode(SIZE)
@@ -88,11 +88,17 @@ pygame.mixer.init()
 sound = pygame.mixer.Sound("music/Doom.ogg").play(-1)
 timer = pygame.time.Clock()
 
-
+start_ticks = pygame.time.get_ticks()
 while True:
+    seconds = (pygame.time.get_ticks() - start_ticks)/1000
+    if seconds > 30:
+        break
+    print(seconds)
+
     for e in pygame.event.get():
+
         if e.type == pygame.QUIT:
-            done = False
+            break
 
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_LEFT:
