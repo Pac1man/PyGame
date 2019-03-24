@@ -15,3 +15,9 @@ class DieBlock(Platform):
     def __init__(self, x, y):
         Platform.__init__(self, x, y)
         self.image = load("images/portal2.png")
+
+
+class Coin(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        self.image = load("images/Coin1.png")

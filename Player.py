@@ -1,9 +1,9 @@
 from pygame.sprite import Sprite, collide_rect
-from pygame import Surface, time
+from pygame import Surface
 import pyganim
 import Platform
 
-MOVE_SPEED = 7
+MOVE_SPEED = 5
 JUMP_POWER = 10
 GRAVITY = 0.7
 ANIMATION_DELAY = 1
@@ -13,6 +13,7 @@ ANIMATION_LEFT = ["images/hero/icon.png"]
 
 
 class Player(Sprite):
+
     def __init__(self, x, y):
         Sprite.__init__(self)
         self.image = Surface((30, 30))
@@ -22,6 +23,7 @@ class Player(Sprite):
         self.rect.x = x
         self.rect.y = y
         self.onGround = False
+        self.score = 0
 
         def make_boltAnim(anim_list, delay):
             boltAnim = []
@@ -75,6 +77,8 @@ class Player(Sprite):
             if collide_rect(self, pl):
                 if isinstance(pl, Platform.DieBlock):  # если пересакаемый блок - blocks.BlockDie или Monster
                     self.die()
+                if isinstance(pl, Platform.Coin):
+                    Platform.Coin.kill(pl)
                 if xvel > 0:
                     self.rect.right = pl.rect.left
                 if xvel < 0:
@@ -88,6 +92,8 @@ class Player(Sprite):
                     self.yvel = 0
 
     def die(self):
+        import pygame
+        pygame.time.wait(50)
         self.teleporting(self.rect.x, self.rect.y)
 
     def teleporting(self, goX, goY):
